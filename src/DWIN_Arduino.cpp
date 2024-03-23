@@ -9,8 +9,6 @@
 #define MIN_ASCII 32
 #define MAX_ASCII 255
 
-#define CMD_READ_TIMEOUT 50
-#define READ_TIMEOUT 100 
 
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__) || defined(FORCEHWSERIAL)
 DWIN::DWIN(HardwareSerial &port, long baud)
@@ -342,7 +340,7 @@ String DWIN::readDWIN()
  
     unsigned long startTime = millis(); // Start time for Timeout
     
-    while ((millis() - startTime < READ_TIMEOUT)) 
+    while ((millis() - startTime < readTimeout))
     {
         if (_dwinSerial->available() > 0)
         {
@@ -377,7 +375,7 @@ String DWIN::handle()
     bool messageEnd = false;
     bool isFirstByte = false;
     unsigned long startTime = millis();
-    while ((millis() - startTime < READ_TIMEOUT))
+    while ((millis() - startTime < readTimeout))
     {
         while (_dwinSerial->available() > 0)
         {
@@ -453,7 +451,7 @@ byte DWIN::readCMDLastByte(bool hiByte)
     byte lastByte = -1;
     byte previousByte = -1;
     unsigned long startTime = millis(); // Start time for Timeout
-    while ((millis() - startTime < CMD_READ_TIMEOUT))
+    while ((millis() - startTime < commandTimeout))
     {
         while (_dwinSerial->available() > 0)
         {
@@ -473,4 +471,20 @@ void DWIN::flushSerial()
 {
     Serial.flush();
     _dwinSerial->flush();
+}
+
+void DWIN::setReadTimeout(int timeout_ms) {
+    readTimeout = timeout_ms;
+}
+
+int DWIN::getReadTimeout() {
+    return readTimeout;
+}
+
+void DWIN::setCommandTimeout(int timeout_ms) {
+    commandTimeout = timeout_ms;
+}
+
+int DWIN::getCommandTimeout() {
+    return commandTimeout;
 }

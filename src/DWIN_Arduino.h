@@ -139,6 +139,12 @@ public:
     // Init the serial port in setup useful for Pico boards
     void initSerial(HardwareSerial& port, long baud);
 
+    void setReadTimeout(int timeout_ms);
+    int getReadTimeout();
+
+    void setCommandTimeout(int timeout_ms);
+    int getCommandTimeout();
+
 
 private:
 
@@ -146,7 +152,7 @@ private:
      #ifndef ESP32
      SoftwareSerial* localSWserial = nullptr; 
      #endif   
-     #endif
+    #endif
 
     Stream* _dwinSerial;   // DWIN Serial interface
     bool _isSoft;          // Is serial interface software
@@ -154,7 +160,10 @@ private:
     bool _echo = false;    // Response Command Show
     bool _isConnected;     // Flag set on successful communication
     bool _noACK = false;   // No ack used with no response kernel 
-    bool _retWord = false; // return word from rx event when true 
+    bool _retWord = false; // return word from rx event when true
+
+    int readTimeout = 100;
+    int commandTimeout = 50;
 
     bool cbfunc_valid;
     hmiListener listenerCallback;
