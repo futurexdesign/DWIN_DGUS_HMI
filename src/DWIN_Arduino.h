@@ -30,6 +30,12 @@
 
 //#define FORCEHWSERIAL
 
+class DWIN_Callable {
+    public:
+        virtual void dwin_callback(String address, int lastBytes, String message, String response);
+        virtual ~DWIN_Callable() = default;
+};
+
 
 class DWIN{
 
@@ -135,6 +141,7 @@ public:
 
     // CallBack Method
     void hmiCallBack(hmiListener callBackFunction);
+    void objectCallBack(DWIN_Callable* callback);
 
     // Init the serial port in setup useful for Pico boards
     void initSerial(HardwareSerial& port, long baud);
@@ -167,6 +174,7 @@ private:
 
     bool cbfunc_valid;
     hmiListener listenerCallback;
+    DWIN_Callable* callbackObject;
 
     void init(Stream* port, bool isSoft); 
     byte readCMDLastByte(bool hiByte = 0);

@@ -429,7 +429,11 @@ String DWIN::handle()
     if (isFirstByte)
     {
         if (_retWord) lastBytes = (previousByte << 8) + lastBytes;
-        listenerCallback(address, lastBytes, message, response);
+        if (callbackObject != nullptr) {
+            callbackObject->dwin_callback(address, lastBytes, message, response);
+        } else {
+            listenerCallback(address, lastBytes, message, response);
+        }
     }
     if (isFirstByte && _echo)
     {
@@ -487,4 +491,9 @@ void DWIN::setCommandTimeout(int timeout_ms) {
 
 int DWIN::getCommandTimeout() {
     return commandTimeout;
+}
+
+void DWIN::objectCallBack(DWIN_Callable *callback) {
+    this->callbackObject = callback;
+
 }
