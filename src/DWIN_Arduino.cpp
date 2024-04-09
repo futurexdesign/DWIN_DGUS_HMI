@@ -497,3 +497,7 @@ void DWIN::objectCallBack(DWIN_Callable *callback) {
     this->callbackObject = callback;
 
 }
+
+DWIN_Callable::~DWIN_Callable() {
+// noop
+}

@@ -33,7 +33,7 @@
 class DWIN_Callable {
     public:
         virtual void dwin_callback(String address, int lastBytes, String message, String response);
-        virtual ~DWIN_Callable() { };
+        virtual ~DWIN_Callable();
 };
 
 
