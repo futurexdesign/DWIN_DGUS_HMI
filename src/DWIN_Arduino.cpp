@@ -493,6 +493,66 @@ int DWIN::getCommandTimeout() {
     return commandTimeout;
 }
 
+/**
+ * Disable a touch control on the requested page.  You will need to know the PageID, Control ID, and Control Type (code)
+ * in order to disable it.  The control ID can be found in DGUS in the sidebar control menu. It is a sequential number
+ * based on the order the controls are added.
+ *
+ * NOTE: Basic Touch controls do NOT get a control ID number.  They cannot be interacted with via the serial interface.
+ *
+ * @param pageID The DWIN Page ID that the control is located on.
+ * @param controlId The ID number of the touch control
+ * @param controlCode The type of control being disabled.
+ */
+void DWIN::disableTouchControl(byte pageID, byte controlId, TOUCH_CONTROL_CODE controlCode) {
+    // 5a a5 0b 82 00b0 5aa5  {PAGE} {CONTROL ID} {CONTROL CODE} 0000
+
+    // Before interacting with the touch instruction access, we should check to make sure it is cleared, and ready
+    // to accept new instructions.
+    byte chkBuffer[] = {CMD_HEAD1, CMD_HEAD2, 0x04, CMD_READ, 0x00, 0x0b, 01};
+    byte status;
+
+    do {
+        _dwinSerial->write(chkBuffer, sizeof(chkBuffer));
+        status = readCMDLastByte();
+    } while (status != 0x00);
+
+    byte sendBuffer[] = {CMD_HEAD1, CMD_HEAD2, 0x0b, CMD_WRITE, 0x00, 0xb0, 0x5a,0xa5, 0x00, pageID, controlId, controlCode, 0x00, 0x00};
+
+    _dwinSerial->write(sendBuffer, sizeof(sendBuffer));
+    readDWIN();
+}
+
+/**
+ * Enable a touch control on the requested page.  You will need to know the PageID, Control ID, and Control Type (code)
+ * in order to disable it.  The control ID can be found in DGUS in the sidebar control menu. It is a sequential number
+ * based on the order the controls are added.
+ *
+ * NOTE: Basic Touch controls do NOT get a control ID number.  They cannot be interacted with via the serial interface.
+ *
+ * @param pageID The DWIN Page ID that the control is located on.
+ * @param controlId The ID number of the touch control
+ * @param controlCode The type of control being disabled.
+ */
+void DWIN::enableTouchControl(byte pageID, byte controlId, TOUCH_CONTROL_CODE controlCode) {
+    // 5a a5 0b 82 00b0 5aa5  {PAGE} {CONTROL ID} {CONTROL CODE} 0001
+    // Before interacting with the touch instruction access, we should check to make sure it is cleared, and ready
+    // to accept new instructions.
+    byte chkBuffer[] = {CMD_HEAD1, CMD_HEAD2, 0x04, CMD_READ, 0x00, 0x0b, 01};
+    byte status;
+
+    do {
+        _dwinSerial->write(chkBuffer, sizeof(chkBuffer));
+        status = readCMDLastByte();
+    } while (status != 0x00);
+
+    byte sendBuffer[] = {CMD_HEAD1, CMD_HEAD2, 0x0b, CMD_WRITE, 0x00, 0xb0, 0x5a,0xa5, 0x00, pageID, controlId, controlCode, 0x00, 0x01};
+
+    // byte sendBuffer[] = {CMD_HEAD1, CMD_HEAD2, 0x0b, CMD_WRITE, 0x00, 0x0b0, 0x5a, 0xa5, pageID, controlId, controlCode, 0x00, 0x01};
+    _dwinSerial->write(sendBuffer, sizeof(sendBuffer));
+    readDWIN();
+}
+
 void DWIN::objectCallBack(DWIN_Callable *callback) {
     this->callbackObject = callback;
 
