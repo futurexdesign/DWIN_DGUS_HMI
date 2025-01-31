@@ -30,10 +30,26 @@
 
 //#define FORCEHWSERIAL
 
+/**
+ * Interface for a class which defines a callback method.
+ */
 class DWIN_Callable {
     public:
         virtual void dwin_callback(String address, int lastBytes, String message, String response) = 0;
         virtual ~DWIN_Callable();
+};
+
+/**
+ * Define the touch control code for the various types of touch controls. Ref Dev guide Page 64
+ *
+ * NOTE: BasicTouch control cannot be interacted with over the serial interface.
+ */
+enum TOUCH_CONTROL_CODE : uint8_t {
+    VARIABLE_DATA_INPUT = 0x00,
+    POPUP_MENU = 0x01,
+    INCREMENTAL_ADJUSTMENT = 0x02,
+    DRAG_ADJUSTMENT = 0x03,
+    RETURN_KEY_CODE = 0x05,
 };
 
 
@@ -151,6 +167,11 @@ public:
 
     void setCommandTimeout(int timeout_ms);
     int getCommandTimeout();
+
+
+    void disableTouchControl(byte pageID, byte controlId, TOUCH_CONTROL_CODE controlCode);
+    void enableTouchControl(byte pageID, byte controlId, TOUCH_CONTROL_CODE controlCode);
+
 
 
 private:
