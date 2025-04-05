@@ -553,6 +553,31 @@ void DWIN::enableTouchControl(byte pageID, byte controlId, TOUCH_CONTROL_CODE co
     readDWIN();
 }
 
+
+/**
+ * Hide a control form being displayed by writing 0xFF00 to the SP.   See page: 157 of the manual.
+ *
+ * @param SP SP for the control we need to hide.
+ */
+void DWIN::hideSP(long spAddress) {
+    // 5a a5 05 82 {SP} FF00
+    byte chkBuffer[] = {CMD_HEAD1, CMD_HEAD2, 0x05, CMD_WRITE, (uint8_t)((spAddress >> 8) & 0xFF), (uint8_t)((spAddress)&0xFF), 0xFF, 0x00};
+    _dwinSerial->write(chkBuffer, sizeof(chkBuffer));
+    readDWIN();
+}
+
+/**
+ * Show a control by writing the VP back to the SP.   See page: 157 of the manual.
+ *
+ * @param spAddress SP for the control we need to hide.
+ */
+void DWIN::showSP(long spAddress, long vpAddress) {
+    // 5a a5 05 82 {SP} FF00
+    byte chkBuffer[] = {CMD_HEAD1, CMD_HEAD2, 0x05, CMD_WRITE, (uint8_t)((spAddress >> 8) & 0xFF), (uint8_t)((spAddress)&0xFF), (uint8_t)((vpAddress >> 8) & 0xFF), (uint8_t)((vpAddress)&0xFF)};
+    _dwinSerial->write(chkBuffer, sizeof(chkBuffer));
+    readDWIN();
+}
+
 void DWIN::objectCallBack(DWIN_Callable *callback) {
     this->callbackObject = callback;
 
