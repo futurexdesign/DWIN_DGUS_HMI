@@ -172,7 +172,9 @@ public:
     void disableTouchControl(byte pageID, byte controlId, TOUCH_CONTROL_CODE controlCode);
     void enableTouchControl(byte pageID, byte controlId, TOUCH_CONTROL_CODE controlCode);
 
+    void hideSP(long spAddress);
 
+    void showSP(long spAddress, long vpAddress);
 
 private:
 
